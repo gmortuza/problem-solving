@@ -1,5 +1,6 @@
 from node import Node
 
+
 class LinkedList:
 
     def __init__(self):
@@ -50,6 +51,16 @@ class LinkedList:
                 return False
             current_element = current_element.get_next()
 
+    def __sizeof__(self):
+        if self.is_empty():
+            return 0
+        size = 1
+        current_element = self.head
+        while current_element.get_next() is not None:
+            size += 1
+            current_element = current_element.get_next()
+        return size
+
     def is_empty(self):
         return self.head == self.tail is None
 
@@ -68,4 +79,3 @@ if __name__ == "__main__":
     ll.delete_at_head()
     ll.delete_at_tail()
     hav = ll.have_element(10)
-    print(ll)
