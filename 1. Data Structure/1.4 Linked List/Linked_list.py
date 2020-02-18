@@ -1,81 +1,116 @@
-from node import Node
+class Node:
+    def __init__(self, value, next=None):
+        self.val = value
+        self.next = next
 
 
-class LinkedList:
+class MyLinkedList:
 
     def __init__(self):
-        self.head = self.tail = None
+        """
+        Initialize your data structure here.
+        """
+        self.head = None
+        self.size = 0
 
-    def insert_at_head(self, element) -> None:
-        if self.is_empty():
-            self.__set_first_element(element)
-        else:
-            node = Node(element)
-            node.set_next(self.head)
-            self.head = node
+    def get(self, index: int) -> int:
+        """
+        Get the value of the index-th node in the linked list. If the index is invalid, return -1.
+        """
+        if index > self.size:
+            return -1
+        current_index = 0
+        current_node = self.head
+        while current_index <= index:
+            if current_index == index:
+                return current_node.val
+            elif current_node.next is None:
+                return -1
+            else:
+                current_node = current_node.next
+                current_index += 1
 
-    def insert_at_tail(self, element) -> None:
-        if self.is_empty():
-            self.__set_first_element(element)
-        else:
-            node = Node(element)
-            self.tail.set_next(node)
-            self.tail = node
+    def addAtHead(self, val: int) -> None:
+        """
+        Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list.
+        """
+        new_node = Node(val, self.head)
+        self.head = new_node
+        self.size += 1
 
-    def delete_at_head(self):
-        if self.is_empty():
-            return None
-        head = self.head
-        self.head = head.get_next()
-        return head
+    def addAtTail(self, val: int) -> None:
+        """
+        Append a node of value val to the last element of the linked list.
+        """
+        if self.size == 0:
+            return self.addAtHead(val)
+        current_node = self.head
+        while current_node is not None:
+            if current_node.next == None:
+                # This is tail
+                new_node = Node(val, None)
+                current_node.next = new_node
+                self.size += 1
+                return
+            current_node = current_node.next
 
-    def delete_at_tail(self):
-        if self.is_empty():
-            return None
-        current_element = self.head  # Start the looping from the head
-        # For singly linked list this operation would be O(n)
-        while True:  # we will keep looking untill we get the next element as tail
-            if current_element.get_next() == self.tail:
-                self.tail = current_element
-                return self.tail
-            current_element = current_element.get_next()
-        pass
+    def addAtIndex(self, index: int, val: int) -> None:
+        """
+        Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted.
+        """
+        if index == 0:
+            return self.addAtHead(val)
+        elif index == self.size:
+            return self.addAtTail(val)
+        elif index > self.size:
+            return
+        current_node = self.head
+        previous_node = None
+        for current_index in range(index + 1):
+            if current_index == index:
+                # Insert before this
+                previous_node.next = Node(val, current_node)
+                self.size += 1
+                return
+            previous_node = current_node
+            current_node = current_node.next
 
-    def have_element(self, element):
-        # This will return only the first index
-        current_element = self.head
-        while True:
-            if current_element.get_value() == element:
-                return True
-            elif current_element == self.tail:
-                return False
-            current_element = current_element.get_next()
+    def deleteAtIndex(self, index: int) -> None:
+        """
+        Delete the index-th node in the linked list, if the index is valid.
+        """
+        if index == 0:
+            self.head = self.head.next
+            self.size -= 1
+            return
+        if index >= self.size:
+            return
+        current_node = self.head
+        previous_node = None
+        for current_index in range(index + 1):
+            if current_index == index:
+                previous_node.next = current_node.next
+                self.size -= 1
+                return
+            previous_node = current_node
+            current_node = current_node.next
 
-    def __sizeof__(self):
-        if self.is_empty():
-            return 0
-        size = 1
-        current_element = self.head
-        while current_element.get_next() is not None:
-            size += 1
-            current_element = current_element.get_next()
-        return size
-
-    def is_empty(self):
-        return self.head == self.tail is None
-
-    def __set_first_element(self, element):
-        node = Node(element)
-        self.head = self.tail = node
-
-
-if __name__ == "__main__":
-    ll = LinkedList()
-    ll.insert_at_head(3)
-    ll.insert_at_head(5)
-    ll.insert_at_head(5)
-    ll.insert_at_head(5)
-    ll.insert_at_tail(5)
-    ll.delete_at_head()
-    ll.delete_at_tail()
-    hav = ll.have_element(10)
+# Your MyLinkedList object will be instantiated and called as such:
+obj = MyLinkedList()
+# param_1 = obj.get(index)
+# obj.addAtHead(val)
+# obj.addAtTail(val)
+# obj.addAtIndex(index,val)
+# obj.deleteAtIndex(index)
+# ["MyLinkedList","addAtHead","deleteAtIndex","addAtHead","addAtHead","addAtHead","addAtHead","addAtHead","addAtTail","get","deleteAtIndex","deleteAtIndex"]
+# [[],[2],[1],[2],[7],[3],[2],[5],[5],[5],[6],[4]]
+obj.addAtHead(7)
+obj.deleteAtIndex(1)
+obj.addAtHead(3)
+obj.addAtHead(3)
+obj.addAtHead(3)
+obj.addAtHead(3)
+obj.addAtHead(3)
+obj.addAtHead(3)
+obj.deleteAtIndex(6)
+obj.deleteAtIndex(4)
